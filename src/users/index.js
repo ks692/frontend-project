@@ -2,6 +2,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {useEffect} from "react";
 import {deleteThunk, findAllUsersThunk, updateThunk} from "./users-thunk";
 import {useNavigate} from "react-router";
+import {deleteUser} from "./users-service";
 
 const Users = () => {
     useEffect(() => {
@@ -35,8 +36,7 @@ const Users = () => {
 
                             <div className="col-4">
                                 {currentUser.role=="ADMIN" && user._id!=currentUser._id &&(
-                                    <button type="button" onClick={handleDeleteBtn(user)} className="btn btn-outline-danger">
-                                        <i className="bi bi-trash"></i>
+                                    <button type="button" onClick={() => handleDeleteBtn(user)} className="btn btn-outline-danger">
                                         Delete
                                     </button>)}
                             </div>

@@ -41,6 +41,9 @@ const usersReducer = createSlice({
             state.currentUser = action.payload
             state.publicProfile=action.payload
         },
+        [deleteThunk.fulfilled]: (state, action) => {
+            state.users = action.payload
+        },
         [findAllUsersThunk.fulfilled]: (state, action) => {
             state.users = action.payload
         }
