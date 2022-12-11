@@ -28,9 +28,9 @@ const OmdbDetails = () => {
         dispatch(findMovieByImdbIdThunk(imdbID))
         dispatch(findReviewsByMovieThunk(imdbID))
     },[])
-    console.log(likes)
-    console.log(imdbID)
-    console.log(typeof(imdbID))
+    //console.log(likes)
+    //console.log(imdbID)
+    //console.log(typeof(imdbID))
     const k=(likes.filter(p=>(p.movie._id===Number(imdbID))))
     const test=k.length>0
     const handlePostReviewBtn = () => {
