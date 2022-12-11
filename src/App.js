@@ -4,7 +4,7 @@ import {configureStore} from "@reduxjs/toolkit";
 import {Provider} from "react-redux";
 import omdbReducer from "./omdb/omdb-reducer";
 import OmdbSearch from "./omdb/omdb-search";
-import {likesReducer} from "./likes/likes-reducer";
+import likesReducer from "./likes/likes-reducer";
 import "bootswatch/dist/cyborg/bootstrap.min.css";
 import {Routes, Route} from "react-router";
 import {BrowserRouter} from "react-router-dom";

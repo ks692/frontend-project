@@ -27,11 +27,24 @@ const Users = () => {
                     users.map((user) =>
                     <li key={user._id} className="list-group-item">
                         <div className="row">
+                            <div className="col-4 border">
+                                <span>USER_ID</span>
+                            </div>
+                            <div className="col-4 border">
+                                <span>USER_NAME</span>
+                            </div>
+
+                            <div className="col-4 border">
+                                {currentUser.role=="ADMIN" && user._id!=currentUser._id &&(
+                                    <span>ADMIN_CONTROLS</span>)}
+                            </div>
+                        </div>
+                        <div className="row">
                             <div className="col-4">
-                                <span style={myStyle}  onClick={() => navigate("/profile/"+user._id)}>User_id: {user._id}</span>
+                                <span style={myStyle}  onClick={() => navigate("/profile/"+user._id)}>{user._id}</span>
                             </div>
                             <div className="col-4">
-                                <span>Username: {user.username}</span>
+                                <span>{user.username}</span>
                             </div>
 
                             <div className="col-4">

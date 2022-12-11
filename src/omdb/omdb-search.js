@@ -7,7 +7,7 @@ import {Link} from "react-router-dom";
 const OmdbSearch = () => {
     const [searchTerm, setSearchTerm] = useState('Avatar')
     const {movies, loading} = useSelector((state) => state.omdb)
-    console.log(movies)
+    //console.log(movies)
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(findMovieBySearchTermThunk(searchTerm))

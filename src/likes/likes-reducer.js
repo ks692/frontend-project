@@ -1,9 +1,10 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {userLikesMovieThunk} from "./likes-thunks";
+import {findAllUserLikesThunk, userLikesMovieThunk} from "./likes-thunks";
+import {findAllLikesByUser} from "./likes-service";
 
 const initialState = {
     likes: [],
-    loading: false
+    loadLikes: true
 }
 
 export const likesReducer = createSlice({
@@ -12,6 +13,17 @@ export const likesReducer = createSlice({
     extraReducers: {
         [userLikesMovieThunk.fulfilled]: (state, action) => {
             state.likes.push(action.payload)
+        },
+        [findAllUserLikesThunk.fulfilled]: (state, action) => {
+            state.likes=action.payload
+            console.log(state.likes)
+            state.loadLikes=false;
+        },
+        [findAllUserLikesThunk.pending]: (state, action) => {
+            state.loadLikes=true;
         }
+
     }
 })
+
+export default likesReducer.reducer

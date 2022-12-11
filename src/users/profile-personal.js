@@ -16,8 +16,6 @@ const ProfilePersonal = () => {
         dispatch(findUserByIdThunk(uid))
     }, [])
     const {users,loading,currentUser,publicProfile}= useSelector((state) => state.users)
-    console.log(loading)
-    console.log(publicProfile)
     const [value, setValue] = useState('1');
 
     return(

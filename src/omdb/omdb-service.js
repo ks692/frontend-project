@@ -50,11 +50,55 @@ export const findMovieBySearchTerm = async (term) => {
         variables,
         headers
     })
-    console.log(response.data.data.Page.media);
+        //console.log(response.data.data.Page.media);
     return response.data.data.Page.media
 }
 
 export const findMovieByImdbId = async (imdbID) => {
-    const response = await axios.get(`${DETAILS_URL}${imdbID}`)
-    return response.data
+    let query=`query ($id: Int) {
+  Media(id: $id, type: ANIME) {
+    id
+    title {
+      romaji
+      english
+      native
+    }
+    startDate {
+      year
+      month
+      day
+    }
+    endDate {
+      year
+      month
+      day
+    }
+    season
+    seasonYear
+    episodes
+    genres
+    coverImage {
+      large
+    }
+    source
+    averageScore
+    isLicensed
+    status
+  }
+}`
+    const headers = {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization":"EBat8x9gFf2wTdr7hZdJarIK9GeJKMMrHahG2qfo"
+    };
+    let variables={
+        id: imdbID,
+    };
+    const response = await axios.post(SEARCH_URL,{
+        query,
+        variables,
+        headers
+    })
+    //console.log(response.data.data.Media)
+    return response.data.data.Media
 }
