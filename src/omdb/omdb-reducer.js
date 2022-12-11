@@ -13,6 +13,7 @@ const omdbReducer = createSlice({
     initialState,
     extraReducers: {
         [findMovieBySearchTermThunk.fulfilled]: (state, action) => {
+            console.log(action.payload)
             state.movies = action.payload
         },
         [findMovieByImdbIdThunk.fulfilled]: (state, action) => {

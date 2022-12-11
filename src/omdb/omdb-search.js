@@ -7,13 +7,14 @@ import {Link} from "react-router-dom";
 const OmdbSearch = () => {
     const [searchTerm, setSearchTerm] = useState('Avatar')
     const {movies, loading} = useSelector((state) => state.omdb)
+    console.log(movies)
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(findMovieBySearchTermThunk(searchTerm))
     }, [])
     return (
         <>
-            <h1>Omdb Search</h1>
+            <h4>Anime Search</h4>
             <ul className="list-group">
                 <li className="list-group-item">
                     <button
@@ -29,26 +30,58 @@ const OmdbSearch = () => {
                         }}
                         value={searchTerm}/>
                 </li>
+                <br></br>
+                <li className="list-group ">
+                    <div className="row">
+                        <div className="col-1 border text-center">
+                            ID
+                        </div>
+                        <div className="col-2 border text-center">
+                            <span>Image</span>
+                        </div>
+                        <div className="col-3 border text-center">
+                            <span>Name</span>
+                        </div>
+                        <div className="col-2 border text-center">
+                            <span>Native Name</span>
+                        </div>
+                        <div className="col-2 border text-center">
+                            <span>Episodes</span>
+                        </div>
+                        <div className="col-2 border text-center">
+                            <span>Status</span>
+                        </div>
+                    </div>
+                </li>
                 {
                     movies && movies.map((movie) =>
-                        <li key={movie.imdbID} className="list-group-item">
-                            <i onClick={() => {
-                                dispatch(userLikesMovieThunk({
-                                    uid: 111, mid: movie.imdbID
-                                }))
-                            }} className="float-end bi bi-hand-thumbs-up"></i>
-                            <i className="float-end bi bi-hand-thumbs-down me-2"></i>
-                            <img src={movie.Poster} height={50}/>
-                            <Link to={`/details/${movie.imdbID}`}>
-                                {movie.Title}
-                            </Link>
+                        <li key={movie.id} className="list-group-item">
+                            <div className="row">
+                                <div className="col-1 border text-center">
+                                    <Link to={`/details/${movie.id}`}>
+                                        {movie.id}
+                                    </Link>
+                                </div>
+                                <div className="col-2 border text-center">
+                                    <img src={movie.coverImage.medium} className="w-10 h-10"/>
+                                </div>
+                                <div className="col-3 border text-center">
+                                        {movie.title.romaji}
+                                </div>
+                                <div className="col-2 border text-center">
+                                    {movie.title.native}
+                                </div>
+                                <div className="col-2 border text-center">
+                                    {movie.episodes}
+                                </div>
+                                <div className="col-2 border text-center">
+                                    {movie.status}
+                                </div>
+                            </div>
                         </li>
                     )
                 }
             </ul>
-            <pre>
-                {JSON.stringify(movies, null, 2)}
-            </pre>
         </>
     )
 }
