@@ -16,7 +16,7 @@ const Register = () => {
     const [password, setPassword] = useState('')
     const [email, setemail] = useState('');
     const [dateOfBirth, setDateOfBirth] = useState(new Date().toISOString().slice(0,10));
-    const [role, setRole] = useState('');
+    const [role, setRole] = useState('ADMIN');
     let dateJoined = new Date().toISOString().slice(0,10);
     const dispatch = useDispatch()
     const handleRegisterBtn = () => {

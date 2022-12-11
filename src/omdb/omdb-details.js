@@ -2,15 +2,10 @@ import {useParams} from "react-router";
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect, useState} from "react";
 import {findMovieByImdbIdThunk} from "./omdb-thunks";
-import {createReviewThunk, findReviewsByMovieThunk} from "../reviews/reviews-thunks";
+import {createReviewThunk, deleteReviewThunk, findReviewsByMovieThunk} from "../reviews/reviews-thunks";
 import {Link} from "react-router-dom";
-import { FaThumbsUp } from 'react-icons/fa';
-
-import {TabContext} from "@mui/lab";
-import {Tab, Tabs} from "@mui/material";
-import TabPanel from "@mui/lab/TabPanel";
+import { FaThumbsUp,FaTrash } from 'react-icons/fa';
 import {findAllUserLikesThunk, userLikesMovieThunk} from "../likes/likes-thunks";
-import {findUserByIdThunk} from "../users/users-thunk";
 
 const OmdbDetails = () => {
     const {imdbID} = useParams()
@@ -40,6 +35,8 @@ const OmdbDetails = () => {
             imdbID
         }))
     }
+    const checkForAdmin=currentUser && (currentUser.role==="ADMIN"|| currentUser.role==="MODERATOR")
+    //console.log(checkForAdmin)
 
     return(
         <>
@@ -95,19 +92,33 @@ const OmdbDetails = () => {
                         {
                             reviews.map((review) =>
                                 <li className="list-group-item">
-                                    {review.review}
-                                    <Link to={`/profile/${review.author._id}`} className="float-end">
-                                        {review.author.username}
-                                    </Link>
+                                    <div className="card">
+                                        <div className="row">
+                                            <span>
+                                                Review By Author:<Link to={`/profile/${review.author._id}`}>
+                                                    @{review.author.username}
+                                                </Link>
+                                            </span>
+                                            <br></br>
+                                            <div>
+                                                {review.review}
+                                            </div>
+                                            <br></br>
+
+                                            <br></br>
+                                            {
+                                                checkForAdmin &&
+                                                <div className="col-2">
+                                                    <button className="btn btn-danger" onClick={()=>dispatch(deleteReviewThunk({imdbID:imdbID,reviewId:review._id}))}>Delete</button>
+                                                </div>
+                                            }
+                                            </div>
+                                    </div>
                                 </li>
                             )
                         }
                     </ul>
-                    <pre>
-            {JSON.stringify(details, null, 2)}
-                </pre>
 
-                    }
                 </div>
 
             }

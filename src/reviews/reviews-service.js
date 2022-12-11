@@ -16,6 +16,12 @@ export const findReviewsByMovie = async (imdbID) => {
     return response.data
 }
 
+export const deleteReview = async (obj) => {
+    console.log(obj)
+    const response = await api.delete(`${MOVIE_REVIEWS_API}/${obj.imdbID}/${obj.reviewId}`)
+    return response.data
+}
+
 export const findReviewsByAuthor = async (author) => {
     const response = await api.get(`${AUTHOR_REVIEWS_API}/${author}/reviews`)
     return response.data
