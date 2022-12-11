@@ -1,11 +1,13 @@
 import {useDispatch, useSelector} from "react-redux";
-import {logoutThunk} from "./users-thunk";
+import {findUserByIdThunk, logoutThunk} from "./users-thunk";
 import {useNavigate} from "react-router";
 import {Link} from "react-router-dom";
 import {Paper, Tab, Tabs} from "@mui/material";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import TabPanel from '@mui/lab/TabPanel';
 import {TabContext} from "@mui/lab";
+import {findFollowersThunk, findFollowingThunk, followUserThunk} from "../follows/follows-thunks";
+import {findReviewsByAuthorThunk} from "../reviews/reviews-thunks";
 
 
 
@@ -21,12 +23,23 @@ const Profile = () => {
         dispatch(logoutThunk())
         navigate('/login')
     }
+    const uid=currentUser._id
+    useEffect(() => {
+        dispatch(findUserByIdThunk(uid))
+        dispatch(findReviewsByAuthorThunk(uid))
+        dispatch(findFollowersThunk(uid))
+        dispatch(findFollowingThunk(uid))
+    }, [])
+    const {reviews} = useSelector((state) => state.reviews)
+    const {followers, following} = useSelector((state) => state.follows)
+
     return(
         <>
             <h4>Profile</h4>
             {
                 currentUser && <h6>Welcome <b>{currentUser.username}</b></h6>
             }
+
             <button
                 className="btn btn-danger"
                 onClick={handleLogoutBtn}>
@@ -77,20 +90,46 @@ const Profile = () => {
                         <br></br>
                         <TabContext value={value}>
                             <Tabs className="card"
-                                value={value}
-                                textColor="secondary"
-                                indicatorColor="primary"
-                                onChange={(event, newValue) => {
-                                    setValue(newValue);
-                                }}
+                                  value={value}
+                                  textColor="secondary"
+                                  indicatorColor="primary"
+                                  onChange={(event, newValue) => {
+                                      setValue(newValue);
+                                  }}
                             >
                                 <Tab label="Following" value="1"/>
                                 <Tab label="Followed By" value="2"/>
                                 <Tab label="Reviews" value="3"/>
                             </Tabs>
-                        <TabPanel value="1">Item One</TabPanel>
-                        <TabPanel value="2">Item Two</TabPanel>
-                        <TabPanel value="3">Item Three</TabPanel>
+                            <TabPanel value="1"><div className="list-group">
+                                {
+                                    following && following.map((follow) =>
+                                        <Link to={`/profile/${follow.followed._id}`} className="list-group-item">
+                                            {follow.followed.username}
+                                        </Link>
+                                    )
+                                }
+                            </div></TabPanel>
+                            <TabPanel value="2"><div className="list-group">
+                                {
+                                    followers && followers.map((follow) =>
+                                        <Link to={`/profile/${follow.follower._id}`} className="list-group-item">
+                                            {follow.follower.username}
+                                        </Link>
+                                    )
+                                }
+                            </div></TabPanel>
+                            <TabPanel value="3"><ul>
+                                {
+                                    reviews && reviews.map((review) =>
+                                        <li>
+                                            <Link to={`/details/${review.imdbID}`}>
+                                                {review.review} {review.imdbID}
+                                            </Link>
+                                        </li>
+                                    )
+                                }
+                            </ul></TabPanel>
                         </TabContext>
                     </div>
                 </div>

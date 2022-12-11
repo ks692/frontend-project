@@ -27,13 +27,19 @@ const OmdbDetails = () => {
     //console.log(imdbID)
     //console.log(typeof(imdbID))
     const k=(likes.filter(p=>(p.movie._id===Number(imdbID))))
-    const test=k.length>0
+    let test=k.length>0
+    console.log(test)
     //console.log(test)
     const handlePostReviewBtn = () => {
         dispatch(createReviewThunk({
             review,
             imdbID
         }))
+    }
+
+    const handleLikeBtn = (obj) => {
+        dispatch(userLikesMovieThunk(obj))
+        test=true
     }
     const checkForAdmin=currentUser && (currentUser.role==="ADMIN"|| currentUser.role==="MODERATOR")
     //console.log(checkForAdmin)
@@ -74,7 +80,9 @@ const OmdbDetails = () => {
                         {
                             currentUser && !test &&
                             <div className="col-1">
-                                <button  className="btn btn-primary rounded"onClick={()=>dispatch(userLikesMovieThunk({uid:currentUser._id,mid:details.id,movie:details}))}>
+                                <button  className="btn btn-primary rounded"onClick={()=>{
+                                    (handleLikeBtn({uid:currentUser._id,mid:details.id,movie:details}));
+                                }}>
                                 <FaThumbsUp></FaThumbsUp>
                                 </button>
                             </div>

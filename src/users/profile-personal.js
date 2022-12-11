@@ -6,20 +6,45 @@ import {findUserById} from "./users-service";
 import {TabContext} from "@mui/lab";
 import {Tab, Tabs} from "@mui/material";
 import TabPanel from "@mui/lab/TabPanel";
+import {findFollowersThunk, findFollowingThunk, followUserThunk} from "../follows/follows-thunks";
+import {findReviewsByAuthorThunk} from "../reviews/reviews-thunks";
+import {Link} from "react-router-dom";
 
 const ProfilePersonal = () => {
     const {uid} = useParams()
 
     const dispatch = useDispatch()
     useEffect(() => {
-        console.log("called")
         dispatch(findUserByIdThunk(uid))
+        dispatch(findReviewsByAuthorThunk(uid))
+        dispatch(findFollowersThunk(uid))
+        dispatch(findFollowingThunk(uid))
     }, [])
     const {users,loading,currentUser,publicProfile}= useSelector((state) => state.users)
+    const {reviews} = useSelector((state) => state.reviews)
+    const {followers, following} = useSelector((state) => state.follows)
+    const handleFollowBtn = () => {
+        dispatch(followUserThunk({
+            followed: uid
+        }))
+    }
+    //console.log(followers)
+    //console.log(currentUser._id)
+    const k=followers.length>0 && (followers.filter(p=>(p.follower._id===currentUser._id)))
+    //console.log(k)
+    let test=k.length>0
+    //console.log(test)
     const [value, setValue] = useState('1');
-
+    const user=currentUser &&(currentUser._id===uid)
     return(
         <>
+            {
+            currentUser && !user && !test &&
+                <button onClick={handleFollowBtn}
+                    className="btn btn-success float-end">
+                    Follow
+                </button>
+            }
             {
                 loading &&
                 <li className="list-group-item">
@@ -71,9 +96,35 @@ const ProfilePersonal = () => {
                 <Tab label="Followed By" value="2"/>
                 <Tab label="Reviews" value="3"/>
                 </Tabs>
-                <TabPanel value="1">Item One</TabPanel>
-                <TabPanel value="2">Item Two</TabPanel>
-                <TabPanel value="3">Item Three</TabPanel>
+                <TabPanel value="1"><div className="list-group">
+                    {
+                        following && following.map((follow) =>
+                            <Link to={`/profile/${follow.followed._id}`} className="list-group-item">
+                                {follow.followed.username}
+                            </Link>
+                        )
+                    }
+                </div></TabPanel>
+                <TabPanel value="2"><div className="list-group">
+                    {
+                        followers && followers.map((follow) =>
+                            <Link to={`/profile/${follow.follower._id}`} className="list-group-item">
+                                {follow.follower.username}
+                            </Link>
+                        )
+                    }
+                </div></TabPanel>
+                <TabPanel value="3"><ul>
+                    {
+                        reviews && reviews.map((review) =>
+                            <li>
+                                <Link to={`/details/${review.imdbID}`}>
+                                    {review.review} {review.imdbID}
+                                </Link>
+                            </li>
+                        )
+                    }
+                </ul></TabPanel>
                 </TabContext>
                 </div>
                 </div>
