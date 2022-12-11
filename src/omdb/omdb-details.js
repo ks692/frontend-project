@@ -19,7 +19,7 @@ const OmdbDetails = () => {
     const {movies,loadDetails,details} = useSelector((state) => state.omdb)
     const {likes,loadLikes}=useSelector((state)=>state.likes)
     const {users,loading,currentUser,publicProfile} = useSelector((state) => state.users)
-    console.log(currentUser)
+    //console.log(currentUser)
     const dispatch = useDispatch()
     useEffect(() => {
         if(currentUser) {
@@ -33,6 +33,7 @@ const OmdbDetails = () => {
     //console.log(typeof(imdbID))
     const k=(likes.filter(p=>(p.movie._id===Number(imdbID))))
     const test=k.length>0
+    //console.log(test)
     const handlePostReviewBtn = () => {
         dispatch(createReviewThunk({
             review,
@@ -43,13 +44,13 @@ const OmdbDetails = () => {
     return(
         <>
             {
-                loadDetails &&
+                loadDetails && loadLikes &&
                 <li className="list-group-item">
                     Loading...
                 </li>
             }
             {
-                !loadDetails &&
+                !loadDetails && ((currentUser && !loadLikes) || (!currentUser)) &&
                 <div>
                     <h4>{details.title.romaji}</h4>
                     <div className="row">
@@ -74,7 +75,7 @@ const OmdbDetails = () => {
                             <img className="w-100 h-100 " src={details.coverImage.large}/>
                         </div>
                         {
-                            currentUser && test &&
+                            currentUser && !test &&
                             <div className="col-1">
                                 <button  className="btn btn-primary rounded"onClick={()=>dispatch(userLikesMovieThunk({uid:currentUser._id,mid:details.id,movie:details}))}>
                                 <FaThumbsUp></FaThumbsUp>

@@ -16,7 +16,6 @@ export const likesReducer = createSlice({
         },
         [findAllUserLikesThunk.fulfilled]: (state, action) => {
             state.likes=action.payload
-            console.log(state.likes)
             state.loadLikes=false;
         },
         [findAllUserLikesThunk.pending]: (state, action) => {
