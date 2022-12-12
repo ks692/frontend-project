@@ -12,5 +12,6 @@ export const userLikesMovie = async (uid, mid,movie) => {
 
 export const findAllLikesByUser = async (uid) => {
     const response = await axios.get(`${USERS_URL}/${uid}/likes/`)
+    console.log(response.data)
     return response.data
 }

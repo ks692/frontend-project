@@ -1,8 +1,15 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {createMoviesThunk, deleteMovieThunk, findAllMoviesThunk} from "./movies-thunks";
+import {
+    createMoviesThunk,
+    deleteMovieThunk,
+    findAllMoviesThunk,
+    findLikedMoviesThunk,
+    findTopMoviesThunk
+} from "./movies-thunks";
 
 const initialState = {
     movies: [],
+    myMovies:[],
     loading: true
 }
 
@@ -13,15 +20,28 @@ const moviesReducer = createSlice({
         [findAllMoviesThunk.fulfilled]: (state, action) => {
             state.movies = action.payload
         },
+        [findTopMoviesThunk.fulfilled]: (state, action) => {
+            state.loading=false
+            state.movies = action.payload
+        },
+        [findTopMoviesThunk.pending]: (state, action) => {
+            state.loading=true
+        },
         [createMoviesThunk.fulfilled]: (state, action) => {
             state.movies.push(action.payload)
         },
         [deleteMovieThunk.fulfilled]: (state, action) => {
-            // const midx = state.findIndex(m => m._id === action.payload)
             state.movies = state.movies.filter(m => {
                 return m._id !== action.payload
             })
-        }
+        },
+        [findLikedMoviesThunk.fulfilled]: (state, action) => {
+            state.loading=false
+            state.myMovies = action.payload
+        },
+        [findLikedMoviesThunk.pending]: (state, action) => {
+            state.loading=true
+        },
     }
 })
 

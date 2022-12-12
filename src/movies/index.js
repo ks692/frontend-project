@@ -1,60 +1,94 @@
 import {useDispatch, useSelector} from "react-redux";
-import {useEffect, useState} from "react";
-import {createMoviesThunk, deleteMovieThunk, findAllMoviesThunk} from "./movies-thunks";
-import {userLikesMovieThunk} from "../likes/likes-thunks";
+import {useEffect} from "react";
+import {
+    findLikedMoviesThunk,
+    findTopMoviesThunk
+} from "./movies-thunks";
+import Carousel from "react-elastic-carousel";
+import {Link} from "react-router-dom";
+import {findAllLikesByUser} from "../likes/likes-service";
 
+
+const breakPoints = [
+    {width: 1, itemsToShow: 1},
+    {width: 550, itemsToShow: 2},
+    {width: 768, itemsToShow: 3},
+    {width: 1200, itemsToShow: 4},
+];
 const Movies = () => {
-    const {currentUser} = useSelector((state) => state.users)
-    const {movies} = useSelector((state) => state.movies)
-    const [movie, setMovie] = useState({title: 'New Movie'})
     const dispatch = useDispatch()
+    const {currentUser} = useSelector((state) => state.users)
     useEffect(() => {
-        dispatch(findAllMoviesThunk())
+
+        if(currentUser){
+            dispatch(findLikedMoviesThunk(currentUser._id))
+        }
+        dispatch(findTopMoviesThunk())
     }, [])
-    return(
+
+    console.log(currentUser)
+    const {movies,myMovies,loading} = useSelector((state) => state.movies)
+    console.log(movies)
+
+    return (
         <>
-            <h1>Movies</h1>
+            <br/>
             {
                 currentUser &&
-                <h2>Welcome {currentUser.username} </h2>
+                <h4>Welcome {currentUser.username} </h4>
             }
-            <ul className="list-group">
-                <li className="list-group-item">
-                    <button className="btn btn-success float-end" onClick={() => {
-                        dispatch(createMoviesThunk(
-                            {
-                                title: movie.title
-                            }
-                        ))
-                    }}>Create</button>
-                    <input
-                        className="form-control w-75"
-                        onChange={(e) =>
-                            setMovie({...movie, title: e.target.value})}
-                        value={movie.title}/>
-                </li>
-                {
-                    movies.map((movie) =>
-                        <li className="list-group-item"
-                            key={movie._id}>
-                            <i onClick={() => {
-                                dispatch(deleteMovieThunk(movie._id))
-                            }}
-                                className="bi bi-trash float-end"></i>
+            {
+                !currentUser && !loading && movies &&
+                <div>
+                    <h4>Anime 2021</h4>
+                    <Carousel breakPoints={breakPoints}>
+                        {movies && movies.Anime2021.media.map((movie) =>
+                            <Link to={`/details/${movie.id}`} className="col-5 ">
+                            <div className="col">
+                            <img className="row" src={movie.coverImage.large} className="w-100 h-100"/>
+                            <p className="row bottom-0">{movie.title.romaji}</p>
+                            </div>
+                            </Link>
+                            )
+                        }
+                    </Carousel>
+                    <br></br>
+                    <h4>Anime 2022</h4>
+                    <Carousel breakPoints={breakPoints}>
+                        {movies && movies.Anime2022.media.map((movie) =>
+                            <Link to={`/details/${movie.id}`} className="col-5 ">
+                                <div className="col">
+                                    <img className="row" src={movie.coverImage.large} className="w-100 h-100"/>
+                                    <p className="row bottom-0">{movie.title.romaji}</p>
+                                </div>
+                            </Link>
+                        )
+                        }
+                    </Carousel>
+                </div>
+            }
 
-                            <i onClick={() => {
-                                dispatch(userLikesMovieThunk({
-                                    uid: 111, mid: movie._id//imdbID
-                                }))
-                            }} className="float-end bi bi-hand-thumbs-up me-2"></i>
-                            <i className="float-end bi bi-hand-thumbs-down me-2"></i>
+            {
+                currentUser && !loading && myMovies &&
+                <div>
+                    <h4>My Anime</h4>
+                    <Carousel breakPoints={breakPoints}>
+                        {myMovies && myMovies.map((movie) =>
+                            <Link to={`/details/${movie.movie.id}`} className="col-5 ">
+                                <div className="col">
+                                    <img className="row" src={movie.movie.image} className="w-100 h-100"/>
+                                    <p className="row bottom-0">{movie.movie.title}</p>
+                                </div>
+                            </Link>
+                        )
+                        }
+                    </Carousel>
+
+                </div>
+            }
 
 
-                            {movie.title}
-                        </li>
-                    )
-                }
-            </ul>
+
         </>
     )
 }

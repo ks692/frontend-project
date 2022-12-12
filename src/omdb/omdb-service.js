@@ -14,6 +14,7 @@ const query = `
     media(search: $search, type: ANIME, sort: FAVOURITES) {
       id
       coverImage {
+        large
         medium
         color
       }
